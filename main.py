@@ -1,109 +1,141 @@
-def is_prime(n):
-    '''
-    Determina daca un numar este prim sau nu.
-    - n : intreg
-    - prim: bool care va fi true daca numarul este prim, respectiv
-    false daca numarul nu este prim
-    '''
-    prim = True
-    if n < 2:
-        prim = False
-    for i in range(2, n):
-        if n % i == 0:
-            prim = False
-    return prim
+"""
+5. Determină dacă un număr dat este palindrom.
+Funcția principală: is_palindrome(n) -> bool
+Funcția de test: test_is_palindrome()
+"""
 
+def citire():
+    n = int(input("Dati un numar: "))
+    return n
 
-def get_largest_prime_below(n):
-    '''
-    Determina cel mai mare numar prim mai mic decat n
-    Input:
-    - n: intreg
-    Output:
-    - cel mai mare numar prim mai mic decat n
-    '''
+def printMenu():
+    print("1. Citire numar. ")
+    print("2. Verifica daca numarul dat este palindrom. ")
+    print("3. Verifica daca numarul este superprim. ")
+    print("4. Verifica daca numarul dat este antipalindrom. ")
+    print("x. Iesire. ")
 
-    for i in range(n, 2, -1):
-        check = is_prime(i)
-        if check == True:
-            return i
-
-
-def is_leap(year):
-    '''
-    Determina daca un an dat este bisect sau nu
-    Input:
-    - year: intreg care reprezinta anul introdus
-    Output:
-    - False daca anul introdus nu este bisect, respectiv True, daca anul introdus este bisect
-    '''
-    if year % 4 != 0:
-        return False
-    elif year % 100 != 0:
+def is_palindrome(n):
+    """
+    Determina daca un numar dat este palindrom
+    :param n: numar intreg
+    :return: True, daca numarul dat este palindrom, respectiv False, in caz contrar.
+    """
+    x = int(n)
+    k = 0
+    while x > 0:
+        k = k * 10 + x % 10
+        x = x // 10
+    if k == n:
         return True
-    elif year % 400 != 0:
-        return False
     else:
+        return False
+
+def test_is_palindrome():
+    assert is_palindrome(123) == False
+    assert is_palindrome(12321) == True
+    assert is_palindrome(12) == False
+    assert is_palindrome(6789876) == True
+
+"""
+6. Determină dacă un număr este superprim: dacă toate prefixele sale sunt prime. 
+   De exemplu, 233 este superprim, deoarece 2, 23 și 233 sunt toate prime, 
+   dar 237 nu este superprim, deoarece 237 nu este prim.
+Funcția principală: is_superprime(n) -> bool
+Funcția de test: test_is_superprime()
+"""
+
+def is_prime(n):
+    """
+    Verifica daca un numar este superprim, adica, daca toate prefixele sale sunt prime.
+    :param n: un numar intreg
+    :return: True, daca numarul e superprim, respectiv, False, in caz contrar.
+    """
+    ok = True
+    if n < 2:
+        return False
+    for i in range(2,n//2+1):
+        if n % i == 0 and ok == True:
+            ok = False
+    if ok:
         return True
+    else:
+        return False
 
+def test_is_prime():
+    assert is_prime(1) == False
+    assert is_prime(3) == True
+    assert is_prime(9) == False
+    assert is_prime(13) == True
 
-def get_leap_years(start, end):
-    '''
-    Determina folosind functia is_leap toti anii bisecti dintr-un interval dat
-    Input:
-    -start,end : intregi care reprezinta capetele intervalului
-    Output:
-    -leapYears: o lista de intregi care contine toti anii bisecti din intervalul [start,end]
-    '''
-    leapYears = []
-    for i in range(start, end + 1):
-        if is_leap(i):
-            leapYears.append(str(i))
-    for i in range(0, len(leapYears)):
-        leapYears[i] = int(leapYears[i])
-    return leapYears
+def is_superprime(n):
+    copie_n = int(n)
+    ok = True
+    while copie_n != 0 and ok == True:
+        s = is_prime(copie_n)
+        copie_n = copie_n // 10
+        if s == False:
+            ok = False
+    return ok
 
+def test_is_superprime():
+    assert is_superprime(233) == True
+    assert is_superprime(237) == False
+    assert is_superprime(1371) == False
+    assert is_superprime(11311) == True
 
-def test_is_leap():
-    assert is_leap(1964) == True
-    assert is_leap(1968) == True
-    assert is_leap(1972) == True
-    assert is_leap(1973) == False
-    assert is_leap(2100) == False
-    assert is_leap(1700) == False
-    assert is_leap(2020) == True
-    assert is_leap(2030) == False
+"""
+7. Determină dacă un număr este antipalindrom: un număr este antipalindrom dacă oricare două cifre
+    egal depărtate de extremități sunt diferite (excepție făcând cifra din mijloc dacă avem 
+    un număr impar de cifre). De exemplu: 2783 este antipalindrom, iar 2773 nu este.
+Funcția principală: is_antipalindrome(n) -> bool
+Funcția de test: test_is_antipalindrome()
+"""
 
+def is_antipalindrome(n):
+    k = 0
+    x = int(n)
+    aux = 0
+    while x != 0:
+        k = k + 1
+        x = x // 10
+    x = int(n)
+    while x != 0:
+        aux = aux * 10 + x % 10
+        x = x // 10
+    c = 1
+    x = int(n)
+    while aux != 0:
+        if k % 2 != 0 and c != k // 2 + 1:
+            if aux % 10 == x % 10:
+                return False
+        elif aux % 10 == x % 10:
+            return False
+        aux=aux//10
+        x=x//10
+        c = c + 1
+    return True
 
-def test_get_largest_prime_below():
-    assert get_largest_prime_below(10) == 7
-    assert get_largest_prime_below(20) == 19
-    assert get_largest_prime_below(2) == None
-    assert get_largest_prime_below(1) == None
+def test_is_antipalindrome():
+    assert is_antipalindrome(2783) == True
+    assert is_antipalindrome(2773) == False
 
+test_is_palindrome()
+test_is_prime()
+test_is_antipalindrome()
 
-test_get_largest_prime_below()
-test_is_leap()
-
-
-def main():
-    while True:
-        print('1.Cel mai mare numar prim mai mic decat un numar dat.')
-        print('2.Afiseaza toti anii bisecti intre doi ani dati')
-        print('x. Exit')
-        optiune = input('Alegeti o optiune: ')
-        if optiune == '1':
-            nr = int(input('Dati un numar: '))
-            C = get_largest_prime_below(nr)
-            print(f'Cel mai mare numar prim mai mic decat {nr} este {C}')
-        elif optiune == '2':
-            nr1 = int(input('Dati primul an: '))
-            nr2 = int(input('Dati al doilea an: '))
-            print(f'Anii bisecti din intervalul {nr1} , {nr2} este {get_leap_years(nr1, nr2)}')
-
-        elif optiune == 'x':
-            break
-        else:
-            print('Optiune invalida.')
-
-main()
+while True:
+    printMenu()
+    optiune = input("Dati optiunea: ")
+    if optiune == "1":
+        n = citire()
+    elif optiune == "2":
+        print(is_palindrome(n))
+    elif optiune == "3":
+        print(is_superprime(n))
+    elif optiune =="4":
+        print(is_antipalindrome(n))
+    elif optiune == "x":
+        break
+    else:
+        print("Optiune gresita! Reincercati! ")
